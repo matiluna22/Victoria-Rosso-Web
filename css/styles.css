@@ -2175,14 +2175,26 @@ textarea.form-control {
     grid-template-columns: 1fr;
   }
 }
-/* Corrección de visibilidad del cuadro de asesoramiento */
-.advisory-box.reveal-on-scroll {
-  opacity: 1;
-  transform: none;
-}
+
 
 /* Garantizar que la sección del video sea visible */
 .mantis-video-section.reveal-on-scroll {
   opacity: 1;
   transform: none;
+}
+/* Corrección de visibilidad de los cuadros de asesoramiento */
+.advisory-box,
+.advisory-box--mantis {
+  opacity: 1;
+  transform: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .advisory-box {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 28px 22px;
+  }
 }
