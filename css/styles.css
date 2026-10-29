@@ -1130,6 +1130,319 @@ ul, ol {
 /* ==========================================================================
    GALERÍA FOTOGRÁFICA INTERACTIVA CON LIGHTBOX
    ========================================================================== */
+/* ==========================================================================
+   SECCIÓN: NOTAS Y PRENSA EN MEDIOS (EXHIBIDOR HORIZONTAL / SLIDER)
+   ========================================================================== */
+.section--news {
+  background-color: var(--color-cream);
+  padding: 100px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Contenedor principal con flechas a los lados */
+.news-slider-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+/* Flechas laterales circulares para Desktop */
+.news-slider-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background-color: var(--color-white);
+  border: 1.5px solid var(--color-tan-medium);
+  color: var(--color-olive-dark);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.news-slider-arrow:hover {
+  background-color: var(--color-olive-dark);
+  border-color: var(--color-olive-dark);
+  color: var(--color-white);
+  transform: scale(1.08);
+  box-shadow: var(--shadow-lg);
+}
+
+.news-slider-arrow:active {
+  transform: scale(0.95);
+}
+
+/* Ventana de visualización que enmarca el carrusel con bordes circulares */
+.news-slider-viewport {
+  overflow: hidden;
+  width: 100%;
+  max-width: 980px;
+  border-radius: 28px;
+  box-shadow: var(--shadow-lg);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+}
+
+/* Pista de deslizamiento */
+.news-slider-track {
+  display: flex;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+/* Cada diapositiva / slide individual */
+.news-slide {
+  min-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Tarjeta de la nota con bordes circulares y diseño editorial */
+.news-card {
+  display: grid;
+  grid-template-columns: 44% 56%;
+  background-color: var(--color-white);
+  border-radius: 28px;
+  overflow: hidden;
+  min-height: 420px;
+  transition: box-shadow var(--transition-normal);
+}
+
+/* Contenedor de la foto principal */
+.news-card-image-wrap {
+  position: relative;
+  overflow: hidden;
+  min-height: 400px;
+  background-color: var(--color-olive-darkest);
+}
+
+.news-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.news-card:hover .news-card-img {
+  transform: scale(1.04);
+}
+
+/* Etiqueta flotante del medio de comunicación */
+.news-card-source-tag {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(22, 36, 23, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--color-tan-soft);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(223, 200, 168, 0.35);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+}
+
+/* Contenido textual de la nota */
+.news-card-content {
+  padding: 44px 42px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--color-white);
+}
+
+.news-card-top-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.news-category-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background-color: var(--color-olive-subtle);
+  color: var(--color-olive-dark);
+  border: 1px solid rgba(52, 76, 54, 0.15);
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.news-step-badge {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-tan-dark);
+  background-color: var(--color-tan-subtle);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+
+.news-card-headline {
+  font-family: var(--font-heading);
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  color: var(--color-olive-dark);
+  line-height: 1.32;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+.news-card-excerpt {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+  margin-bottom: 26px;
+}
+
+.news-card-action {
+  margin-top: auto;
+}
+
+.news-read-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--radius-full);
+  padding: 12px 26px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.news-read-btn svg {
+  transition: transform 0.25s ease;
+}
+
+.news-read-btn:hover svg {
+  transform: translate(3px, -3px);
+}
+
+/* Pie del carrusel: Dots e indicadores */
+.news-slider-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.news-mobile-arrow {
+  display: none;
+}
+
+.news-slider-dots {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.news-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-tan-medium);
+  opacity: 0.45;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.news-dot:hover {
+  opacity: 0.85;
+  transform: scale(1.15);
+}
+
+.news-dot.active {
+  opacity: 1;
+  background-color: var(--color-olive-primary);
+  width: 32px;
+  border-radius: 8px;
+}
+
+/* Adaptación responsive para pantallas medianas y móviles */
+@media (max-width: 860px) {
+  .section--news {
+    padding: 70px 0;
+  }
+
+  .news-slider-container {
+    gap: 0;
+  }
+
+  .news-slider-arrow {
+    display: none;
+  }
+
+  .news-slider-viewport {
+    border-radius: 22px;
+  }
+
+  .news-card {
+    grid-template-columns: 1fr;
+    border-radius: 22px;
+    min-height: auto;
+  }
+
+  .news-card-image-wrap {
+    min-height: 230px;
+    height: 230px;
+  }
+
+  .news-card-content {
+    padding: 26px 20px;
+  }
+
+  .news-card-headline {
+    font-size: 1.35rem;
+  }
+
+  .news-card-excerpt {
+    font-size: 0.95rem;
+    margin-bottom: 22px;
+  }
+
+  .news-mobile-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: var(--color-white);
+    border: 1.5px solid var(--color-tan-medium);
+    color: var(--color-olive-dark);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .news-mobile-arrow:hover,
+  .news-mobile-arrow:active {
+    background-color: var(--color-olive-dark);
+    border-color: var(--color-olive-dark);
+    color: var(--color-white);
+  }
+}
+
 .gallery-filter-nav {
   display: flex;
   justify-content: center;

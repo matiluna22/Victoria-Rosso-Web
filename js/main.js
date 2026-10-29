@@ -10,10 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeroActions();
   initExperienceTabs();
   initGalleryAndLightbox();
+  initFaqTabs();
   initFaqAccordion();
   initContactForm();
   initCardTriggers();
-  initScrollAnimations();
+  initNewsSlider();
   initScrollAnimations();
 });
 
@@ -311,21 +312,67 @@ function initCardTriggers() {
 /* --------------------------------------------------------------------------
    6. FAQ ACORDEÓN
    -------------------------------------------------------------------------- */
+function initFaqTabs() {
+  const tabBtnConservacion = document.getElementById('faq-tab-btn-conservacion');
+  const tabBtnMantis = document.getElementById('faq-tab-btn-mantis');
+  const panelConservacion = document.getElementById('faq-panel-conservacion');
+  const panelMantis = document.getElementById('faq-panel-mantis');
+
+  if (!tabBtnConservacion || !tabBtnMantis || !panelConservacion || !panelMantis) return;
+
+  function switchFaqTab(isConservacion) {
+    if (isConservacion) {
+      tabBtnConservacion.classList.add('active');
+      tabBtnConservacion.setAttribute('aria-selected', 'true');
+      tabBtnMantis.classList.remove('active');
+      tabBtnMantis.setAttribute('aria-selected', 'false');
+
+      panelConservacion.classList.add('active');
+      panelMantis.classList.remove('active');
+    } else {
+      tabBtnMantis.classList.add('active');
+      tabBtnMantis.setAttribute('aria-selected', 'true');
+      tabBtnConservacion.classList.remove('active');
+      tabBtnConservacion.setAttribute('aria-selected', 'false');
+
+      panelMantis.classList.add('active');
+      panelConservacion.classList.remove('active');
+    }
+
+    // Recalcular altura del acordeón activo en la pestaña visible
+    const activePanel = isConservacion ? panelConservacion : panelMantis;
+    const activeFaq = activePanel.querySelector('.faq-item.active');
+    if (activeFaq) {
+      const answer = activeFaq.querySelector('.faq-answer');
+      if (answer) {
+        answer.style.maxHeight = answer.scrollHeight + 30 + 'px';
+      }
+    }
+  }
+
+  tabBtnConservacion.addEventListener('click', () => switchFaqTab(true));
+  tabBtnMantis.addEventListener('click', () => switchFaqTab(false));
+}
+
 function initFaqAccordion() {
   const faqItems = document.querySelectorAll('.faq-item');
 
   faqItems.forEach(item => {
     const trigger = item.querySelector('.faq-trigger');
     const answer = item.querySelector('.faq-answer');
+    if (!trigger || !answer) return;
 
     trigger.addEventListener('click', () => {
       const isActive = item.classList.contains('active');
+      const container = item.closest('.faq-accordion') || document;
 
-      // Cerrar otros
-      faqItems.forEach(otherItem => {
+      // Cerrar otros acordeones dentro del mismo panel/acordeón
+      container.querySelectorAll('.faq-item').forEach(otherItem => {
         otherItem.classList.remove('active');
-        otherItem.querySelector('.faq-trigger').setAttribute('aria-expanded', 'false');
-        otherItem.querySelector('.faq-answer').style.maxHeight = null;
+        const otherTrigger = otherItem.querySelector('.faq-trigger');
+        const otherAnswer = otherItem.querySelector('.faq-answer');
+        if (otherTrigger) otherTrigger.setAttribute('aria-expanded', 'false');
+        if (otherAnswer) otherAnswer.style.maxHeight = null;
       });
 
       if (!isActive) {
@@ -445,4 +492,106 @@ function initScrollAnimations() {
   });
 
   reveals.forEach(el => scrollObserver.observe(el));
+}
+
+/* --------------------------------------------------------------------------
+   8. SECCIÓN DE PRENSA & NOTAS: CARRUSEL HORIZONTAL
+   -------------------------------------------------------------------------- */
+function initNewsSlider() {
+  const track = document.getElementById('news-slider-track');
+  const viewport = document.getElementById('news-slider-viewport');
+  if (!track || !viewport) return;
+
+  const slides = track.querySelectorAll('.news-slide');
+  const prevBtn = document.getElementById('news-prev-btn');
+  const nextBtn = document.getElementById('news-next-btn');
+  const mobilePrevBtn = document.getElementById('news-mobile-prev-btn');
+  const mobileNextBtn = document.getElementById('news-mobile-next-btn');
+  const dots = document.querySelectorAll('.news-dot');
+
+  if (slides.length === 0) return;
+
+  let currentIndex = 0;
+  const totalSlides = slides.length;
+
+  function updateSlider(index) {
+    if (index < 0) {
+      currentIndex = totalSlides - 1;
+    } else if (index >= totalSlides) {
+      currentIndex = 0;
+    } else {
+      currentIndex = index;
+    }
+
+    track.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
+
+    dots.forEach((dot, idx) => {
+      const isActive = idx === currentIndex;
+      dot.classList.toggle('active', isActive);
+      dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+
+    slides.forEach((slide, idx) => {
+      slide.setAttribute('aria-hidden', idx === currentIndex ? 'false' : 'true');
+    });
+  }
+
+  // Event Listeners para flechas de escritorio
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => updateSlider(currentIndex - 1));
+  }
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => updateSlider(currentIndex + 1));
+  }
+
+  // Event Listeners para flechas móviles
+  if (mobilePrevBtn) {
+    mobilePrevBtn.addEventListener('click', () => updateSlider(currentIndex - 1));
+  }
+  if (mobileNextBtn) {
+    mobileNextBtn.addEventListener('click', () => updateSlider(currentIndex + 1));
+  }
+
+  // Event Listeners para dots
+  dots.forEach(dot => {
+    dot.addEventListener('click', (e) => {
+      const targetIndex = parseInt(e.currentTarget.getAttribute('data-index'), 10);
+      if (!isNaN(targetIndex)) {
+        updateSlider(targetIndex);
+      }
+    });
+  });
+
+  // Soporte de navegación por teclado en el viewport
+  viewport.setAttribute('tabindex', '0');
+  viewport.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+      updateSlider(currentIndex - 1);
+    } else if (e.key === 'ArrowRight') {
+      updateSlider(currentIndex + 1);
+    }
+  });
+
+  // Soporte de gestos táctiles (Swipe)
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  viewport.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  viewport.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchEndX - touchStartX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) {
+        updateSlider(currentIndex - 1);
+      } else {
+        updateSlider(currentIndex + 1);
+      }
+    }
+  }, { passive: true });
+
+  // Inicializar estado inicial
+  updateSlider(0);
 }
